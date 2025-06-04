@@ -13,6 +13,8 @@ const MEMORY_OPTIONS = [
   "1024 GB",
 ];
 
+const ITEMS_PER_PAGE = 6;
+
 const PhoneCatalog: React.FC = () => {
   const [phones, setPhones] = useState<any[]>([]);
   const [filteredPhones, setFilteredPhones] = useState<any[]>([]);
@@ -22,6 +24,7 @@ const PhoneCatalog: React.FC = () => {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedMemory, setSelectedMemory] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchPhones = async () => {
@@ -75,6 +78,7 @@ const PhoneCatalog: React.FC = () => {
       filtered = [...filtered].sort((a, b) => b.price - a.price);
     }
     setFilteredPhones(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [phones, selectedBrand, selectedMemory, searchQuery, sortOrder]);
 
   const hasActiveFilters = !!(selectedBrand || selectedMemory);
@@ -82,6 +86,17 @@ const PhoneCatalog: React.FC = () => {
   const handleResetFilters = () => {
     setSelectedBrand("");
     setSelectedMemory("");
+  };
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredPhones.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentPhones = filteredPhones.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (loading) {
@@ -140,7 +155,8 @@ const PhoneCatalog: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex-grow">
+
+          <div className="flex-1">
             <div className="mb-6">
               <SearchBar
                 searchQuery={searchQuery}
@@ -152,11 +168,56 @@ const PhoneCatalog: React.FC = () => {
                 Нет телефонов по выбранным критериям
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredPhones.map((phone) => (
-                  <PhoneCard key={phone.id} phone={phone} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {currentPhones.map((phone) => (
+                    <PhoneCard key={phone.id} phone={phone} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center mt-8 gap-2">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`px-4 py-2 rounded-lg ${
+                        currentPage === 1
+                          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                          : "bg-blue-500 text-white hover:bg-blue-600"
+                      }`}
+                    >
+                      ←
+                    </button>
+
+                    {[...Array(totalPages)].map((_, index) => (
+                      <button
+                        key={index + 1}
+                        onClick={() => handlePageChange(index + 1)}
+                        className={`px-4 py-2 rounded-lg ${
+                          currentPage === index + 1
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-blue-600 hover:bg-blue-50"
+                        }`}
+                      >
+                        {index + 1}
+                      </button>
+                    ))}
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`px-4 py-2 rounded-lg ${
+                        currentPage === totalPages
+                          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                          : "bg-blue-500 text-white hover:bg-blue-600"
+                      }`}
+                    >
+                      →
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

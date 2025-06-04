@@ -3,92 +3,86 @@ import PhoneCard from "./PhoneCard";
 import FilterPanel from "./FilterPanel";
 import SearchBar from "./SearchBar";
 
-interface PhoneSpecs {
-  screen: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  camera: string;
-}
-
-interface Phone {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  specs: PhoneSpecs;
-}
+const BRAND_OPTIONS = ["Apple", "Oppo", "Samsung", "Vivo", "Xiaomi"];
+const MEMORY_OPTIONS = [
+  "32 GB",
+  "64 GB",
+  "128 GB",
+  "256 GB",
+  "512 GB",
+  "1024 GB",
+];
 
 const PhoneCatalog: React.FC = () => {
-  const [phones, setPhones] = useState<Phone[]>([]);
-  const [filteredPhones, setFilteredPhones] = useState<Phone[]>([]);
+  const [phones, setPhones] = useState<any[]>([]);
+  const [filteredPhones, setFilteredPhones] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
+  const [selectedMemory, setSelectedMemory] = useState("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
     const fetchPhones = async () => {
       try {
-        console.log("Fetching phones...");
         const response = await fetch("http://localhost:5000/api/phones");
-        console.log("Response status:", response.status);
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
-        console.log("Received data:", data);
-
         if (!Array.isArray(data)) {
           throw new Error("Received data is not an array");
         }
-
         setPhones(data);
         setFilteredPhones(data);
       } catch (err) {
-        console.error("Error fetching phones:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
+        setPhones([]);
+        setFilteredPhones([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchPhones();
   }, []);
 
   useEffect(() => {
     let filtered = phones;
-
+    if (selectedBrand) {
+      filtered = filtered.filter((phone) => phone.brand === selectedBrand);
+    }
+    if (selectedMemory) {
+      const memNorm = selectedMemory.replace(/\s+/g, "").toLowerCase();
+      filtered = filtered.filter(
+        (phone) =>
+          phone.specs &&
+          phone.specs.storage &&
+          phone.specs.storage.replace(/\s+/g, "").toLowerCase() === memNorm
+      );
+    }
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (phone) =>
           phone.name.toLowerCase().includes(query) ||
-          phone.brand.toLowerCase().includes(query) ||
-          phone.description.toLowerCase().includes(query) ||
-          Object.values(phone.specs).some((spec) =>
-            spec.toLowerCase().includes(query)
-          )
+          phone.brand.toLowerCase().includes(query)
       );
     }
-
-    if (selectedBrand) {
-      filtered = filtered.filter((phone) => phone.brand === selectedBrand);
+    if (sortOrder === "asc") {
+      filtered = [...filtered].sort((a, b) => a.price - b.price);
+    } else {
+      filtered = [...filtered].sort((a, b) => b.price - a.price);
     }
-
-    filtered = filtered.filter(
-      (phone) => phone.price >= priceRange.min && phone.price <= priceRange.max
-    );
-
     setFilteredPhones(filtered);
-  }, [phones, searchQuery, selectedBrand, priceRange]);
+  }, [phones, selectedBrand, selectedMemory, searchQuery, sortOrder]);
 
-  const uniqueBrands = Array.from(new Set(phones.map((phone) => phone.brand)));
+  const hasActiveFilters = !!(selectedBrand || selectedMemory);
+
+  const handleResetFilters = () => {
+    setSelectedBrand("");
+    setSelectedMemory("");
+  };
 
   if (loading) {
     return (
@@ -116,34 +110,55 @@ const PhoneCatalog: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Phone Catalog</h1>
-
-      <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-
-      <div className="flex gap-8">
-        <div className="w-64 flex-shrink-0">
-          <FilterPanel
-            brands={uniqueBrands}
-            selectedBrand={selectedBrand}
-            priceRange={priceRange}
-            onBrandChange={setSelectedBrand}
-            onPriceChange={(min, max) => setPriceRange({ min, max })}
-          />
-        </div>
-
-        <div className="flex-grow">
-          {filteredPhones.length === 0 ? (
-            <div className="text-center text-gray-600 text-xl">
-              No phones found matching your criteria
+    <div className="min-h-screen bg-gray-50 px-4 py-10">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-8 text-center text-blue-800 drop-shadow-sm">
+          Каталог телефонов
+        </h1>
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-72 flex-shrink-0">
+            <div className="mb-6">
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+                className="border border-blue-200 rounded-xl px-4 py-3 w-full text-lg font-semibold bg-white shadow focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+              >
+                <option value="asc">Сначала дешевые</option>
+                <option value="desc">Сначала дорогие</option>
+              </select>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPhones.map((phone) => (
-                <PhoneCard key={phone.id} phone={phone} />
-              ))}
+            <div className="bg-white rounded-2xl shadow-2xl p-6">
+              <FilterPanel
+                brands={BRAND_OPTIONS}
+                selectedBrand={selectedBrand}
+                memories={MEMORY_OPTIONS}
+                selectedMemory={selectedMemory}
+                onBrandChange={setSelectedBrand}
+                onMemoryChange={setSelectedMemory}
+                onReset={handleResetFilters}
+                hasActiveFilters={hasActiveFilters}
+              />
             </div>
-          )}
+          </div>
+          <div className="flex-grow">
+            <div className="mb-6">
+              <SearchBar
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
+            </div>
+            {filteredPhones.length === 0 ? (
+              <div className="text-center text-gray-600 text-xl bg-white rounded-xl shadow p-8">
+                Нет телефонов по выбранным критериям
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPhones.map((phone) => (
+                  <PhoneCard key={phone.id} phone={phone} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

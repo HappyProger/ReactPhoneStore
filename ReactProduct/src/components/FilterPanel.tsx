@@ -3,81 +3,66 @@ import React from "react";
 interface FilterPanelProps {
   brands: string[];
   selectedBrand: string;
-  priceRange: { min: number; max: number };
+  memories: string[];
+  selectedMemory: string;
   onBrandChange: (brand: string) => void;
-  onPriceChange: (min: number, max: number) => void;
+  onMemoryChange: (memory: string) => void;
+  onReset: () => void;
+  hasActiveFilters: boolean;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
   brands,
   selectedBrand,
-  priceRange,
+  memories,
+  selectedMemory,
   onBrandChange,
-  onPriceChange,
+  onMemoryChange,
+  onReset,
+  hasActiveFilters,
 }) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Filters</h2>
-
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Brand</h3>
-        <div className="space-y-2">
-          <label className="flex items-center">
+    <div className="flex flex-col gap-6">
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="font-bold text-xl mb-3 border-b pb-2">Бренд</h3>
+        {brands.map((brand) => (
+          <label key={brand} className="flex items-center mb-2">
             <input
               type="radio"
               name="brand"
-              value=""
-              checked={selectedBrand === ""}
-              onChange={(e) => onBrandChange(e.target.value)}
+              value={brand}
+              checked={selectedBrand === brand}
+              onChange={() => onBrandChange(brand)}
               className="mr-2"
             />
-            All Brands
+            {brand}
           </label>
-          {brands.map((brand) => (
-            <label key={brand} className="flex items-center">
-              <input
-                type="radio"
-                name="brand"
-                value={brand}
-                checked={selectedBrand === brand}
-                onChange={(e) => onBrandChange(e.target.value)}
-                className="mr-2"
-              />
-              {brand}
-            </label>
-          ))}
-        </div>
+        ))}
       </div>
-
-      <div>
-        <h3 className="font-medium mb-2">Price Range</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm text-gray-600">Min Price</label>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="font-bold text-xl mb-3 border-b pb-2">Память</h3>
+        {memories.map((memory) => (
+          <label key={memory} className="flex items-center mb-2">
             <input
-              type="number"
-              value={priceRange.min}
-              onChange={(e) =>
-                onPriceChange(Number(e.target.value), priceRange.max)
-              }
-              className="w-full p-2 border rounded mt-1"
-              min="0"
+              type="radio"
+              name="memory"
+              value={memory}
+              checked={selectedMemory === memory}
+              onChange={() => onMemoryChange(memory)}
+              className="mr-2"
             />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-600">Max Price</label>
-            <input
-              type="number"
-              value={priceRange.max}
-              onChange={(e) =>
-                onPriceChange(priceRange.min, Number(e.target.value))
-              }
-              className="w-full p-2 border rounded mt-1"
-              min="0"
-            />
-          </div>
-        </div>
+            {memory}
+          </label>
+        ))}
       </div>
+      {hasActiveFilters && (
+        <button
+          className="mt-2 bg-red-500 text-white font-semibold py-2 rounded-lg shadow hover:bg-red-600 transition"
+          onClick={onReset}
+        >
+          Сбросить фильтры
+        </button>
+      )}
     </div>
   );
 };

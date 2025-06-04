@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "iPhone 13",
+    "brand": "Apple",
+    "price": 999,
+    "description": "Latest iPhone with amazing features",
+    "imageUrl": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-13-finish-select-202207-6-1inch-midnight?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1656712882661",
+    "specs": {
+      "screen": "6.1-inch Super Retina XDR",
+      "processor": "A15 Bionic",
+      "ram": "4GB",
+      "storage": "128GB",
+      "camera": "12MP Dual Camera"
+    }
+  },
+  {
+    "id": "2",
+    "name": "Galaxy S21",
+    "brand": "Samsung",
+    "price": 799,
+    "description": "Powerful Android smartphone with amazing camera",
+    "imageUrl": "https://images.samsung.com/is/image/samsung/p6pim/uk/2101/gallery/uk-galaxy-s21-5g-g991-sm-g991bzadeub-368338803",
+    "specs": {
+      "screen": "6.2-inch Dynamic AMOLED",
+      "processor": "Exynos 2100",
+      "ram": "8GB",
+      "storage": "128GB",
+      "camera": "64MP Triple Camera"
+    }
+  }
+]

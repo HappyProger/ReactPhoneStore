@@ -1,32 +1,14 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-interface PhoneSpecs {
-  screen: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  camera: string;
-}
-
-interface Phone {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  oldPrice?: number;
-  currency?: string;
-  description: string;
-  imageUrl: string;
-  installment?: number;
-  installmentCount?: number;
-  specs: PhoneSpecs;
-}
+import { Phone } from "../types/types";
 
 interface CartContextType {
-  cartItems: Phone[];
   addToCart: (phone: Phone) => void;
   removeFromCart: (id: string) => void;
+  onUpdateQuantity: (id: string, quantity: number) => void;
+  onReorderItems: (items: Phone[]) => void;
   isCartOpen: boolean;
+  cartItems: Phone[];
   toggleCart: () => void;
   totalPrice: number;
 }
@@ -40,18 +22,44 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const addToCart = (phone: Phone) => {
-    setCartItems((prev) => [...prev, phone]);
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.id === phone.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === phone.id
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
+            : item
+        );
+      } else {
+        return [...prev, { ...phone, quantity: 1 }];
+      }
+    });
   };
 
   const removeFromCart = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const onUpdateQuantity = (id: string, quantity: number) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+      )
+    );
+  };
+
+  const onReorderItems = (items: Phone[]) => {
+    setCartItems(items);
+  };
+
   const toggleCart = () => {
     setIsCartOpen((prev) => !prev);
   };
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  );
 
   return (
     <CartContext.Provider
@@ -59,6 +67,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
         cartItems,
         addToCart,
         removeFromCart,
+        onUpdateQuantity,
+        onReorderItems,
         isCartOpen,
         toggleCart,
         totalPrice,

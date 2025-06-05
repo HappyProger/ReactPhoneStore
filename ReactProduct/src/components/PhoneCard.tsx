@@ -1,28 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../context/NotificationContext";
-
-interface PhoneSpecs {
-  screen: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  camera: string;
-}
-
-interface Phone {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  oldPrice?: number;
-  currency?: string;
-  description: string;
-  imageUrl: string;
-  installment?: number;
-  installmentCount?: number;
-  specs: PhoneSpecs;
-}
+import { Phone } from "../types/types";
 
 interface PhoneCardProps {
   phone: Phone;

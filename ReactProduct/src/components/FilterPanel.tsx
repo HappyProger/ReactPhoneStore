@@ -1,10 +1,5 @@
 import React from "react";
-
-interface Phone {
-  id: string;
-  brand: string;
-  price: number;
-}
+import { Phone } from "../types/types";
 
 interface FilterPanelProps {
   phones: Phone[];
@@ -21,7 +16,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   priceRange,
   onPriceChange,
 }) => {
-  const uniqueBrands = Array.from(new Set(phones.map((phone) => phone.brand)));
+  const uniqueBrands = Array.from(
+    new Set(phones.map((phone) => phone.brand ?? ""))
+  );
   const minPrice = Math.min(...phones.map((phone) => phone.price));
   const maxPrice = Math.max(...phones.map((phone) => phone.price));
 

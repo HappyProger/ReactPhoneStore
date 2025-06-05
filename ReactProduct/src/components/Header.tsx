@@ -4,30 +4,15 @@ import { Link } from "react-router-dom";
 import Cart from "./Cart";
 import { useCart } from "../context/CartContext";
 
-interface PhoneSpecs {
-  screen: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  camera: string;
-}
-
-interface Phone {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  oldPrice?: number;
-  currency?: string;
-  description: string;
-  imageUrl: string;
-  installment?: number;
-  installmentCount?: number;
-  specs: PhoneSpecs;
-}
-
 const Header: React.FC = () => {
-  const { isCartOpen, toggleCart, cartItems, removeFromCart } = useCart();
+  const {
+    isCartOpen,
+    toggleCart,
+    cartItems,
+    removeFromCart,
+    onUpdateQuantity,
+    onReorderItems,
+  } = useCart();
 
   return (
     <>
@@ -59,6 +44,8 @@ const Header: React.FC = () => {
         onClose={toggleCart}
         items={cartItems}
         onRemoveItem={removeFromCart}
+        onUpdateQuantity={onUpdateQuantity}
+        onReorderItems={onReorderItems}
       />
     </>
   );

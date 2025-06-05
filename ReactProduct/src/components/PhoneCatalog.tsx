@@ -5,27 +5,7 @@ import SearchBar from "./SearchBar";
 import Pagination from "./Pagination";
 import { useCart } from "../context/CartContext";
 
-interface PhoneSpecs {
-  screen: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  camera: string;
-}
-
-interface Phone {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  oldPrice?: number;
-  currency?: string;
-  description: string;
-  imageUrl: string;
-  installment?: number;
-  installmentCount?: number;
-  specs: PhoneSpecs;
-}
+import { Phone } from "../types/types";
 
 const BRAND_OPTIONS = ["Apple", "Oppo", "Samsung", "Vivo", "Xiaomi"];
 const MEMORY_OPTIONS = [
@@ -78,14 +58,14 @@ const PhoneCatalog: React.FC = () => {
       filtered = filtered.filter(
         (phone) =>
           phone.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          phone.brand.toLowerCase().includes(searchQuery.toLowerCase())
+          (phone.brand ?? "").toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply brand filter
     if (selectedBrands.length > 0) {
       filtered = filtered.filter((phone) =>
-        selectedBrands.includes(phone.brand)
+        selectedBrands.includes(phone.brand ?? "")
       );
     }
 

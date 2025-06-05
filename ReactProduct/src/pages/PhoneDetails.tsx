@@ -2,27 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
-interface PhoneSpecs {
-  screen: string;
-  processor: string;
-  ram: string;
-  storage: string;
-  camera: string;
-}
-
-interface Phone {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  oldPrice?: number;
-  currency?: string;
-  description: string;
-  imageUrl: string;
-  installment?: number;
-  installmentCount?: number;
-  specs: PhoneSpecs;
-}
+import { Phone } from "../types/types";
 
 const PhoneDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -155,15 +135,15 @@ const PhoneDetailsPage: React.FC = () => {
             </h3>
             <dl className="grid grid-cols-2 gap-y-3 text-gray-700">
               <dt className="font-normal">Экран</dt>
-              <dd className="text-right">{phone.specs.screen}</dd>
+              <dd className="text-right">{phone.specs?.screen ?? ""}</dd>
               <dt className="font-normal">Процессор</dt>
-              <dd className="text-right">{phone.specs.processor}</dd>
+              <dd className="text-right">{phone.specs?.processor ?? ""}</dd>
               <dt className="font-normal">Оперативная память</dt>
-              <dd className="text-right">{phone.specs.ram}</dd>
+              <dd className="text-right">{phone.specs?.ram ?? ""}</dd>
               <dt className="font-normal">Память</dt>
-              <dd className="text-right">{phone.specs.storage}</dd>
+              <dd className="text-right">{phone.specs?.storage ?? ""}</dd>
               <dt className="font-normal">Камера</dt>
-              <dd className="text-right">{phone.specs.camera}</dd>
+              <dd className="text-right">{phone.specs?.camera ?? ""}</dd>
             </dl>
           </div>
         </div>

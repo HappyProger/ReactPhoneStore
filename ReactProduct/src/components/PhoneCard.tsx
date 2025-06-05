@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../context/NotificationContext";
 
 interface PhoneSpecs {
   screen: string;
@@ -30,6 +31,7 @@ interface PhoneCardProps {
 
 const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const handleClick = () => {
     navigate(`/phone/${phone.id}`);
@@ -38,6 +40,10 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     onAddToCart(phone);
+    showNotification(
+      `${phone.brand} ${phone.name} добавлен в корзину`,
+      "success"
+    );
   };
 
   return (
@@ -82,7 +88,7 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
           onClick={handleAddToCart}
           className="w-full bg-black text-white py-2 rounded-xl font-semibold text-lg hover:bg-gray-800 transition mb-2"
         >
-          Add to cart
+          Добавить в корзину
         </button>
       </div>
     </div>

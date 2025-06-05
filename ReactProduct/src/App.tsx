@@ -7,25 +7,28 @@ import PhoneCatalog from "./components/PhoneCatalog";
 import HomePage from "./pages/HomePage";
 import PhoneDetailsPage from "./pages/PhoneDetails";
 import { CartProvider } from "./context/CartContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import "./App.css";
 
 const App: React.FC = () => {
   return (
-    <CartProvider>
-      <Router>
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/products" element={<PhoneCatalog />} />
-              <Route path="/phone/:id" element={<PhoneDetailsPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </CartProvider>
+    <NotificationProvider>
+      <CartProvider>
+        <Router>
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/products" element={<PhoneCatalog />} />
+                <Route path="/phone/:id" element={<PhoneDetailsPage />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </CartProvider>
+    </NotificationProvider>
   );
 };
 

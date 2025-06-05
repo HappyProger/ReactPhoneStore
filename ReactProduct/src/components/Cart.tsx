@@ -23,6 +23,7 @@ interface CartProps {
   onRemoveItem: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onReorderItems: (items: Phone[]) => void;
+  clearCart: () => void;
 }
 
 const Cart: React.FC<CartProps> = ({
@@ -32,6 +33,7 @@ const Cart: React.FC<CartProps> = ({
   onRemoveItem,
   onUpdateQuantity,
   onReorderItems,
+  clearCart,
 }) => {
   const { showNotification } = useNotification();
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
@@ -62,6 +64,7 @@ const Cart: React.FC<CartProps> = ({
     if (items.length === 0) return;
     setIsOrderPlaced(true);
     showNotification("Заказ оформлен!", "success");
+    clearCart();
   };
 
   const onDragEnd = (result: DropResult) => {

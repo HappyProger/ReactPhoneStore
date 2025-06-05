@@ -12,6 +12,7 @@ const Header: React.FC = () => {
     removeFromCart,
     onUpdateQuantity,
     onReorderItems,
+    clearCart,
   } = useCart();
 
   return (
@@ -46,6 +47,7 @@ const Header: React.FC = () => {
         onRemoveItem={removeFromCart}
         onUpdateQuantity={onUpdateQuantity}
         onReorderItems={onReorderItems}
+        clearCart={clearCart}
       />
     </>
   );

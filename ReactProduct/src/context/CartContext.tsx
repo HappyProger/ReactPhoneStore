@@ -7,6 +7,7 @@ interface CartContextType {
   removeFromCart: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onReorderItems: (items: Phone[]) => void;
+  clearCart: () => void;
   isCartOpen: boolean;
   cartItems: Phone[];
   toggleCart: () => void;
@@ -56,6 +57,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     setIsCartOpen((prev) => !prev);
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
@@ -69,6 +74,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
         removeFromCart,
         onUpdateQuantity,
         onReorderItems,
+        clearCart,
         isCartOpen,
         toggleCart,
         totalPrice,

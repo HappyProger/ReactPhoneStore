@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import PhoneCatalog from "./components/PhoneCatalog";
 import HomePage from "./pages/HomePage";
 import Cart from "./components/Cart";
+import PhoneDetailsPage from "./pages/PhoneDetails";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/products" element={<PhoneCatalog />} />
+            <Route path="/phone/:id" element={<PhoneDetailsPage />} />
             <Route
               path="/cart"
               element={

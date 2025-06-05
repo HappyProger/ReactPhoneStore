@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface PhoneSpecs {
   screen: string;
@@ -27,8 +28,17 @@ interface PhoneCardProps {
 }
 
 const PhoneCard: React.FC<PhoneCardProps> = ({ phone }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/phone/${phone.id}`);
+  };
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-0 flex flex-col items-center max-w-xs mx-auto relative overflow-hidden transition-transform duration-200 hover:shadow-2xl hover:-translate-y-2 cursor-pointer">
+    <div
+      onClick={handleClick}
+      className="bg-white rounded-2xl shadow-lg p-0 flex flex-col items-center max-w-xs mx-auto relative overflow-hidden transition-transform duration-200 hover:shadow-2xl hover:-translate-y-2 cursor-pointer"
+    >
       <div className="relative w-full flex flex-col items-center pt-6">
         {phone.oldPrice && (
           <div className="absolute left-4 top-2 z-10 bg-blue-500 text-white text-lg font-bold px-4 py-1 rounded-lg line-through opacity-90 select-none">

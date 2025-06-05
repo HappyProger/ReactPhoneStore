@@ -128,7 +128,7 @@ const PhoneCatalog: React.FC = () => {
     <div className="min-h-screen bg-gray-50 px-4 py-10">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-8 text-center text-blue-800 drop-shadow-sm">
-          Каталог телефонов
+          Phone catalog
         </h1>
         <div className="flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-72 flex-shrink-0">

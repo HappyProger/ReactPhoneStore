@@ -29,6 +29,22 @@ app.get("/api/phones", async (req, res) => {
   }
 });
 
+app.get("/api/phones/:id", async (req, res) => {
+  try {
+    const data = await fs.readFile(dataFile, "utf8");
+    const phones = JSON.parse(data);
+    const phone = phones.find((p) => p.id === req.params.id);
+
+    if (!phone) {
+      return res.status(404).json({ message: "Phone not found" });
+    }
+
+    res.json(phone);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 app.post("/api/phones", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");

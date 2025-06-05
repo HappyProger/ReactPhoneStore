@@ -19,6 +19,8 @@ interface FilterPanelProps {
   onPriceChange: (range: [number, number]) => void;
   selectedMemory?: string;
   onMemoryChange?: (memory: string) => void;
+  sortOrder: "asc" | "desc";
+  onSortOrderChange: (order: "asc" | "desc") => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -29,6 +31,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onPriceChange,
   selectedMemory,
   onMemoryChange,
+  sortOrder,
+  onSortOrderChange,
 }) => {
   const minPrice = Math.min(...phones.map((phone) => phone.price));
   const maxPrice = Math.max(...phones.map((phone) => phone.price));
@@ -43,6 +47,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Сортировка */}
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="font-bold text-xl mb-3 border-b pb-2">Сортировка</h3>
+        <select
+          value={sortOrder}
+          onChange={(e) => onSortOrderChange(e.target.value as "asc" | "desc")}
+          className="w-full p-2 border rounded"
+        >
+          <option value="asc">Сначала дешевые</option>
+          <option value="desc">Сначала дорогие</option>
+        </select>
+      </div>
       {/* Фильтр по брендам */}
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="font-bold text-xl mb-3 border-b pb-2">Бренд</h3>

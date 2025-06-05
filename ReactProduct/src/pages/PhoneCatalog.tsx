@@ -19,6 +19,7 @@ const PhoneCatalog: React.FC = () => {
   const [selectedMemory, setSelectedMemory] = useState<string>("");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -58,9 +59,11 @@ const PhoneCatalog: React.FC = () => {
 
     // Apply memory filter
     if (selectedMemory) {
-      filtered = filtered.filter((phone) =>
-        phone.specs?.storage?.includes(selectedMemory)
-      );
+      filtered = filtered.filter((phone) => {
+        const storage = phone.specs?.storage?.replace(/\s+/g, "").toLowerCase();
+        const selected = selectedMemory.replace(/\s+/g, "").toLowerCase();
+        return storage === selected;
+      });
     }
 
     // Apply price filter
@@ -68,9 +71,25 @@ const PhoneCatalog: React.FC = () => {
       (phone) => phone.price >= priceRange[0] && phone.price <= priceRange[1]
     );
 
+    // Apply sorting
+    filtered = [...filtered].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.price - b.price;
+      } else {
+        return b.price - a.price;
+      }
+    });
+
     setFilteredPhones(filtered);
     setCurrentPage(1);
-  }, [phones, searchQuery, selectedBrands, selectedMemory, priceRange]);
+  }, [
+    phones,
+    searchQuery,
+    selectedBrands,
+    selectedMemory,
+    priceRange,
+    sortOrder,
+  ]);
 
   const itemsPerPage = ITEMS_PER_PAGE;
   const totalPages = Math.ceil(filteredPhones.length / itemsPerPage);
@@ -115,6 +134,8 @@ const PhoneCatalog: React.FC = () => {
             onPriceChange={setPriceRange}
             selectedMemory={selectedMemory}
             onMemoryChange={setSelectedMemory}
+            sortOrder={sortOrder}
+            onSortOrderChange={setSortOrder}
           />
         </div>
         <div className="md:w-3/4">

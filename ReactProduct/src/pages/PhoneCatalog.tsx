@@ -1,69 +1,144 @@
 import React, { useEffect, useState } from "react";
-import { api, Brand, Device } from "../services/api";
+import { api } from "../services/api";
+import { Phone } from "../types/types";
+import PhoneCard from "../components/PhoneCard";
+import FilterPanel from "../components/FilterPanel";
+import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination";
+import { useCart } from "../context/CartContext";
 
-export default function PhoneCatalog() {
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+const ITEMS_PER_PAGE = 4;
+
+const PhoneCatalog: React.FC = () => {
+  const [phones, setPhones] = useState<Phone[]>([]);
+  const [filteredPhones, setFilteredPhones] = useState<Phone[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedMemory, setSelectedMemory] = useState<string>("");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    api
-      .getBrands()
-      .then((list: Brand[]) => setBrands(list))
-      .catch((err: Error) => console.error(err));
+    const fetchPhones = async () => {
+      try {
+        const data = await api.getAllPhones();
+        setPhones(data);
+        setFilteredPhones(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPhones();
   }, []);
 
   useEffect(() => {
-    if (selectedBrand) {
-      api
-        .getDevicesByBrand(selectedBrand)
-        .then((devs: Device[]) => setDevices(devs))
-        .catch((err: Error) => console.error(err));
+    let filtered = [...phones];
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (phone) =>
+          phone.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (phone.brand ?? "").toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
-  }, [selectedBrand]);
+
+    // Apply brand filter
+    if (selectedBrands.length > 0) {
+      filtered = filtered.filter((phone) =>
+        selectedBrands.includes(phone.brand ?? "")
+      );
+    }
+
+    // Apply memory filter
+    if (selectedMemory) {
+      filtered = filtered.filter((phone) =>
+        phone.specs?.storage?.includes(selectedMemory)
+      );
+    }
+
+    // Apply price filter
+    filtered = filtered.filter(
+      (phone) => phone.price >= priceRange[0] && phone.price <= priceRange[1]
+    );
+
+    setFilteredPhones(filtered);
+    setCurrentPage(1);
+  }, [phones, searchQuery, selectedBrands, selectedMemory, priceRange]);
+
+  const itemsPerPage = ITEMS_PER_PAGE;
+  const totalPages = Math.ceil(filteredPhones.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPhones = filteredPhones.slice(startIndex, endIndex);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl text-gray-600">Loading phones...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl text-red-600">
+          Error: {error}
+          <br />
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Phone catalog</h1>
-
-      <div className="mb-4">
-        <label htmlFor="brand-select" className="mr-2">
-          Выберите бренд:
-        </label>
-        <select
-          id="brand-select"
-          onChange={(e) => setSelectedBrand(e.target.value)}
-          className="border px-2 py-1"
-        >
-          <option value="">-- Выберите бренд --</option>
-          {brands.map((br) => (
-            <option key={br.id} value={br.id}>
-              {br.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {devices.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
-          {devices.map((d) => (
-            <div
-              key={d.device_id}
-              className="border rounded-lg p-4 shadow-sm"
-            >
-              <img
-                src={d.image_url}
-                alt={d.name}
-                className="h-40 w-full object-contain mb-2"
-              />
-              <h2 className="font-semibold">{d.name}</h2>
-              <p className="text-gray-700">
-                Цена: {d.price} {d.currency}
-              </p>
-            </div>
-          ))}
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="md:w-1/4">
+          <FilterPanel
+            phones={phones}
+            selectedBrands={selectedBrands}
+            onBrandChange={setSelectedBrands}
+            priceRange={priceRange}
+            onPriceChange={setPriceRange}
+            selectedMemory={selectedMemory}
+            onMemoryChange={setSelectedMemory}
+          />
         </div>
-      )}
+        <div className="md:w-3/4">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            suggestions={phones}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+            {currentPhones.map((phone) => (
+              <PhoneCard key={phone.id} phone={phone} onAddToCart={addToCart} />
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default PhoneCatalog;

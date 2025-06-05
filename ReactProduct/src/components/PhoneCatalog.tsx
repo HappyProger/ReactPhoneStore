@@ -29,6 +29,7 @@ const PhoneCatalog: React.FC = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [currentPage, setCurrentPage] = useState(1);
   const { addToCart } = useCart();
+  const [selectedMemory, setSelectedMemory] = useState<string>("");
 
   useEffect(() => {
     const fetchPhones = async () => {
@@ -74,9 +75,18 @@ const PhoneCatalog: React.FC = () => {
       (phone) => phone.price >= priceRange[0] && phone.price <= priceRange[1]
     );
 
+    // Apply memory filter
+    if (selectedMemory) {
+      filtered = filtered.filter((phone) => {
+        const storage = phone.specs?.storage?.replace(/\s+/g, "").toLowerCase();
+        const selected = selectedMemory.replace(/\s+/g, "").toLowerCase();
+        return storage === selected;
+      });
+    }
+
     setFilteredPhones(filtered);
     setCurrentPage(1);
-  }, [phones, searchQuery, selectedBrands, priceRange]);
+  }, [phones, searchQuery, selectedBrands, selectedMemory, priceRange]);
 
   const itemsPerPage = ITEMS_PER_PAGE;
   const totalPages = Math.ceil(filteredPhones.length / itemsPerPage);
@@ -119,6 +129,8 @@ const PhoneCatalog: React.FC = () => {
             onBrandChange={setSelectedBrands}
             priceRange={priceRange}
             onPriceChange={setPriceRange}
+            selectedMemory={selectedMemory}
+            onMemoryChange={setSelectedMemory}
           />
         </div>
         <div className="md:w-3/4">

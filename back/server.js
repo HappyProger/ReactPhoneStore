@@ -5,6 +5,7 @@ const path = require("path");
 require("dotenv").config();
 
 const app = express();
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -19,16 +20,25 @@ const initializeDataFile = async () => {
   }
 };
 
+// Получение всех телефонов с возможностью фильтрации
 app.get("/api/phones", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
-    const phones = JSON.parse(data);
+    let phones = JSON.parse(data);
+
+    // Фильтрация по бренду
+    const brand = req.query.brand;
+    if (brand) {
+      phones = phones.filter((phone) => phone.brand === brand);
+    }
+
     res.json(phones);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+// Получение телефона по ID
 app.get("/api/phones/:id", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
@@ -45,6 +55,7 @@ app.get("/api/phones/:id", async (req, res) => {
   }
 });
 
+// Добавление нового телефона
 app.post("/api/phones", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
@@ -61,9 +72,9 @@ app.post("/api/phones", async (req, res) => {
   }
 });
 
+// Инициализация файла данных при запуске сервера
 initializeDataFile().then(() => {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
   });
 });

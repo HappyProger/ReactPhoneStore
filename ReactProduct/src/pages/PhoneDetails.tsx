@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
+import { api } from "../services/api";
 import { Phone } from "../types/types";
 
 const PhoneDetailsPage: React.FC = () => {
@@ -20,11 +20,7 @@ const PhoneDetailsPage: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/phones/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        const data = await api.getPhoneById(id);
         setPhone(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -90,45 +86,49 @@ const PhoneDetailsPage: React.FC = () => {
         {/* Правая колонка */}
         <div className="md:w-1/2 flex flex-col gap-8">
           {/* Карточка с ценой и кнопкой */}
-          <div className="border rounded-xl p-6 shadow-md space-y-4">
-            <div className="flex items-center gap-4">
-              {phone.oldPrice && (
-                <p className="text-xl line-through text-gray-400 select-none">
+          <div className="border rounded-xl p-6 shadow-md">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <span className="text-3xl font-bold text-blue-600">
                   {phone.currency || "$"}
-                  {phone.oldPrice}
-                </p>
-              )}
+                  {phone.price}
+                </span>
+                {phone.oldPrice && (
+                  <span className="ml-3 text-xl text-gray-500 line-through">
+                    {phone.currency || "$"}
+                    {phone.oldPrice}
+                  </span>
+                )}
+              </div>
               {discountPercent > 0 && (
-                <span className="bg-red-600 text-white text-sm font-semibold rounded px-2 py-0.5 select-none">
+                <span className="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded">
                   -{discountPercent}%
                 </span>
               )}
             </div>
-            <p className="text-4xl font-extrabold">
-              {phone.currency || "$"}
-              {phone.price}
-            </p>
             {phone.installment && phone.installmentCount && (
-              <p className="text-gray-600">
-                {phone.currency || "$"}
-                {phone.installment} × {phone.installmentCount} months
-              </p>
+              <div className="mb-4 text-gray-600">
+                Рассрочка: {phone.currency || "$"}
+                {phone.installment} × {phone.installmentCount} месяцев
+              </div>
             )}
             <button
               onClick={handleBuy}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg py-4 text-lg transition"
+              className="w-full bg-black text-white py-3 rounded-xl font-semibold text-lg hover:bg-gray-800 transition"
             >
-              Купить
+              Добавить в корзину
             </button>
           </div>
 
           {/* Описание */}
-          <div className="border rounded-xl p-6 shadow-md">
-            <h3 className="font-semibold text-lg mb-4">Описание</h3>
-            <p className="text-gray-700">{phone.description}</p>
-          </div>
+          {phone.description && (
+            <div className="border rounded-xl p-6 shadow-md">
+              <h3 className="font-semibold text-lg mb-4">Описание</h3>
+              <p className="text-gray-700">{phone.description}</p>
+            </div>
+          )}
 
-          {/* Основные характеристики */}
+          {/* Характеристики */}
           <div className="border rounded-xl p-6 shadow-md">
             <h3 className="font-semibold text-lg mb-4">
               Основные характеристики

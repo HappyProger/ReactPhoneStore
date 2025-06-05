@@ -1,12 +1,24 @@
 import React from "react";
 import { Phone } from "../types/types";
 
+const BRAND_OPTIONS = ["Apple", "Oppo", "Samsung", "Vivo", "Xiaomi"];
+const MEMORY_OPTIONS = [
+  "32 GB",
+  "64 GB",
+  "128 GB",
+  "256 GB",
+  "512 GB",
+  "1024 GB",
+];
+
 interface FilterPanelProps {
   phones: Phone[];
   selectedBrands: string[];
   onBrandChange: (brands: string[]) => void;
   priceRange: [number, number];
   onPriceChange: (range: [number, number]) => void;
+  selectedMemory?: string;
+  onMemoryChange?: (memory: string) => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -15,10 +27,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onBrandChange,
   priceRange,
   onPriceChange,
+  selectedMemory,
+  onMemoryChange,
 }) => {
-  const uniqueBrands = Array.from(
-    new Set(phones.map((phone) => phone.brand ?? ""))
-  );
   const minPrice = Math.min(...phones.map((phone) => phone.price));
   const maxPrice = Math.max(...phones.map((phone) => phone.price));
 
@@ -32,9 +43,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Фильтр по брендам */}
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="font-bold text-xl mb-3 border-b pb-2">Бренд</h3>
-        {uniqueBrands.map((brand) => (
+        {BRAND_OPTIONS.map((brand) => (
           <label key={brand} className="flex items-center mb-2">
             <input
               type="checkbox"
@@ -47,12 +59,32 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         ))}
       </div>
 
+      {/* Фильтр по памяти */}
+      {onMemoryChange && (
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="font-bold text-xl mb-3 border-b pb-2">Объем памяти</h3>
+          <select
+            value={selectedMemory || ""}
+            onChange={(e) => onMemoryChange(e.target.value)}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Все варианты</option>
+            {MEMORY_OPTIONS.map((memory) => (
+              <option key={memory} value={memory}>
+                {memory}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Фильтр по цене */}
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="font-bold text-xl mb-3 border-b pb-2">Цена</h3>
         <div className="space-y-4">
           <div className="flex justify-between text-sm text-gray-600">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+            <span>{priceRange[0]}</span>
+            <span>{priceRange[1]}</span>
           </div>
           <input
             type="range"

@@ -86,7 +86,7 @@
       "screen": "6.81-inch AMOLED",
       "processor": "Snapdragon 888",
       "ram": "8GB",
-      "storage": "256GB",
+      "storage": "512GB",
       "camera": "108MP Triple Camera"
     }
   },
@@ -161,7 +161,7 @@
       "screen": "6.1-inch Super Retina XDR",
       "processor": "A15 Bionic",
       "ram": "4GB",
-      "storage": "128GB",
+      "storage": "1024GB",
       "camera": "12MP Dual Camera"
     }
   },
@@ -180,7 +180,7 @@
       "screen": "6.1-inch Super Retina XDR",
       "processor": "A15 Bionic",
       "ram": "4GB",
-      "storage": "128GB",
+      "storage": "1024GB",
       "camera": "12MP Dual Camera"
     }
   },
@@ -198,7 +198,7 @@
       "screen": "6.1-inch Super Retina XDR",
       "processor": "A15 Bionic",
       "ram": "4GB",
-      "storage": "128GB",
+      "storage": "512GB",
       "camera": "12MP Dual Camera"
     }
   },

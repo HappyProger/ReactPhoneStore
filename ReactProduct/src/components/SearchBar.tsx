@@ -1,21 +1,18 @@
 import React from "react";
 
 interface SearchBarProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
-  searchQuery,
-  onSearchChange,
-}) => {
+const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
   return (
     <div className="w-full max-w-2xl mx-auto mb-8">
       <div className="relative">
         <input
           type="text"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="Search phones by name, brand, or specs..."
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />

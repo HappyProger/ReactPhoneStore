@@ -25,13 +25,19 @@ interface Phone {
 
 interface PhoneCardProps {
   phone: Phone;
+  onAddToCart: (phone: Phone) => void;
 }
 
-const PhoneCard: React.FC<PhoneCardProps> = ({ phone }) => {
+const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/phone/${phone.id}`);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToCart(phone);
   };
 
   return (
@@ -72,7 +78,10 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone }) => {
         <div className="text-gray-600 text-sm mb-3 text-center min-h-[40px]">
           {phone.description}
         </div>
-        <button className="w-full bg-black text-white py-2 rounded-xl font-semibold text-lg hover:bg-gray-800 transition mb-2">
+        <button
+          onClick={handleAddToCart}
+          className="w-full bg-black text-white py-2 rounded-xl font-semibold text-lg hover:bg-gray-800 transition mb-2"
+        >
           Оформить заказ
         </button>
       </div>

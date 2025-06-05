@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 interface PhoneSpecs {
   screen: string;
@@ -28,6 +29,7 @@ const PhoneDetailsPage: React.FC = () => {
   const [phone, setPhone] = useState<Phone | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { addToCart, toggleCart } = useCart();
 
   useEffect(() => {
     const fetchPhoneDetails = async () => {
@@ -53,6 +55,13 @@ const PhoneDetailsPage: React.FC = () => {
 
     fetchPhoneDetails();
   }, [id]);
+
+  const handleBuy = () => {
+    if (phone) {
+      addToCart(phone);
+      toggleCart();
+    }
+  };
 
   if (loading) {
     return (
@@ -85,6 +94,9 @@ const PhoneDetailsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto max-w-5xl px-6 py-10">
+      <h1 className="text-3xl font-bold mb-8 text-center md:text-left">
+        {phone.brand} {phone.name}
+      </h1>
       <div className="flex flex-col md:flex-row gap-12">
         {/* Фото */}
         <div className="md:w-1/2 flex justify-center items-center">
@@ -122,7 +134,10 @@ const PhoneDetailsPage: React.FC = () => {
                 {phone.installment} × {phone.installmentCount} months
               </p>
             )}
-            <button className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg py-4 text-lg transition">
+            <button
+              onClick={handleBuy}
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg py-4 text-lg transition"
+            >
               Купить
             </button>
           </div>

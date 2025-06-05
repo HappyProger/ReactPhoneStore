@@ -1,68 +1,84 @@
 import React from "react";
 
+interface Phone {
+  id: string;
+  brand: string;
+  price: number;
+}
+
 interface FilterPanelProps {
-  brands: string[];
-  selectedBrand: string;
-  memories: string[];
-  selectedMemory: string;
-  onBrandChange: (brand: string) => void;
-  onMemoryChange: (memory: string) => void;
-  onReset: () => void;
-  hasActiveFilters: boolean;
+  phones: Phone[];
+  selectedBrands: string[];
+  onBrandChange: (brands: string[]) => void;
+  priceRange: [number, number];
+  onPriceChange: (range: [number, number]) => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
-  brands,
-  selectedBrand,
-  memories,
-  selectedMemory,
+  phones,
+  selectedBrands,
   onBrandChange,
-  onMemoryChange,
-  onReset,
-  hasActiveFilters,
+  priceRange,
+  onPriceChange,
 }) => {
+  const uniqueBrands = Array.from(new Set(phones.map((phone) => phone.brand)));
+  const minPrice = Math.min(...phones.map((phone) => phone.price));
+  const maxPrice = Math.max(...phones.map((phone) => phone.price));
+
+  const handleBrandChange = (brand: string) => {
+    if (selectedBrands.includes(brand)) {
+      onBrandChange(selectedBrands.filter((b) => b !== brand));
+    } else {
+      onBrandChange([...selectedBrands, brand]);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="font-bold text-xl mb-3 border-b pb-2">Бренд</h3>
-        {brands.map((brand) => (
+        {uniqueBrands.map((brand) => (
           <label key={brand} className="flex items-center mb-2">
             <input
-              type="radio"
-              name="brand"
-              value={brand}
-              checked={selectedBrand === brand}
-              onChange={() => onBrandChange(brand)}
+              type="checkbox"
+              checked={selectedBrands.includes(brand)}
+              onChange={() => handleBrandChange(brand)}
               className="mr-2"
             />
             {brand}
           </label>
         ))}
       </div>
+
       <div className="bg-white rounded-lg shadow p-4">
-        <h3 className="font-bold text-xl mb-3 border-b pb-2">Память</h3>
-        {memories.map((memory) => (
-          <label key={memory} className="flex items-center mb-2">
-            <input
-              type="radio"
-              name="memory"
-              value={memory}
-              checked={selectedMemory === memory}
-              onChange={() => onMemoryChange(memory)}
-              className="mr-2"
-            />
-            {memory}
-          </label>
-        ))}
+        <h3 className="font-bold text-xl mb-3 border-b pb-2">Цена</h3>
+        <div className="space-y-4">
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>${priceRange[0]}</span>
+            <span>${priceRange[1]}</span>
+          </div>
+          <input
+            type="range"
+            min={minPrice}
+            max={maxPrice}
+            value={priceRange[0]}
+            onChange={(e) =>
+              onPriceChange([Number(e.target.value), priceRange[1]])
+            }
+            className="w-full"
+          />
+          <input
+            type="range"
+            min={minPrice}
+            max={maxPrice}
+            value={priceRange[1]}
+            onChange={(e) =>
+              onPriceChange([priceRange[0], Number(e.target.value)])
+            }
+            className="w-full"
+          />
+        </div>
       </div>
-      {hasActiveFilters && (
-        <button
-          className="mt-2 bg-red-500 text-white font-semibold py-2 rounded-lg shadow hover:bg-red-600 transition"
-          onClick={onReset}
-        >
-          Сбросить фильтры
-        </button>
-      )}
     </div>
   );
 };

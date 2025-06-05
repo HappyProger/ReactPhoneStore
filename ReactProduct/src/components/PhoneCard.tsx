@@ -28,15 +28,19 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
   return (
     <div
       onClick={handleClick}
-      className="bg-white rounded-2xl shadow-lg p-0 flex flex-col items-center max-w-xs mx-auto relative overflow-hidden transition-transform duration-200 hover:shadow-2xl hover:-translate-y-2 cursor-pointer"
+      className="bg-white rounded-2xl shadow-lg p-0 flex flex-col items-center max-w-xs mx-auto relative overflow-hidden transition-transform duration-200 hover:shadow-2xl hover:-translate-y-2 cursor-pointer h-[480px]"
     >
       <div className="relative w-full flex flex-col items-center pt-6">
-        {phone.oldPrice && (
-          <div className="absolute left-4 top-2 z-10 bg-blue-500 text-white text-lg font-bold px-4 py-1 rounded-lg line-through opacity-90 select-none">
-            {phone.currency || "$"}
-            {phone.oldPrice}
-          </div>
-        )}
+        <div className="absolute left-4 top-2 z-10" style={{ height: 36 }}>
+          {phone.oldPrice ? (
+            <div className="bg-blue-500 text-white text-lg font-bold px-4 py-1 rounded-lg line-through opacity-90 select-none">
+              {phone.currency || "$"}
+              {phone.oldPrice}
+            </div>
+          ) : (
+            <div className="invisible px-4 py-1">-</div>
+          )}
+        </div>
         <img
           src={phone.imageUrl}
           alt={phone.name}
@@ -44,8 +48,8 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
           style={{ maxWidth: "90%" }}
         />
       </div>
-      <div className="flex flex-col items-center w-full px-6 pb-6 pt-2">
-        <div className="text-center font-semibold text-lg mt-2 mb-1">
+      <div className="flex flex-col items-center w-full px-6 pb-6 pt-2 flex-1">
+        <div className="flex items-center justify-center w-full min-h-[48px] max-h-[48px] text-center font-semibold text-lg mt-2 mb-1 overflow-hidden text-ellipsis line-clamp-2">
           {phone.brand} {phone.name}
         </div>
         <div className="flex items-center justify-center gap-2 mb-2">
@@ -60,12 +64,12 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
             </span>
           )}
         </div>
-        <div className="text-gray-600 text-sm mb-3 text-center min-h-[40px]">
+        <div className="text-gray-600 text-sm mb-3 text-center min-h-[40px] max-h-[48px] overflow-hidden text-ellipsis line-clamp-2">
           {phone.description}
         </div>
         <button
           onClick={handleAddToCart}
-          className="w-full bg-black text-white py-2 rounded-xl font-semibold text-lg hover:bg-gray-800 transition mb-2"
+          className="w-full bg-black text-white py-2 rounded-xl font-semibold text-lg hover:bg-gray-800 transition mb-2 mt-auto"
         >
           Добавить в корзину
         </button>

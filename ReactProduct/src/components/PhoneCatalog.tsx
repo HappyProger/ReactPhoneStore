@@ -17,7 +17,7 @@ const MEMORY_OPTIONS = [
   "1024 GB",
 ];
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 4;
 
 const PhoneCatalog: React.FC = () => {
   const [phones, setPhones] = useState<Phone[]>([]);
@@ -78,7 +78,7 @@ const PhoneCatalog: React.FC = () => {
     setCurrentPage(1);
   }, [phones, searchQuery, selectedBrands, priceRange]);
 
-  const itemsPerPage = 8;
+  const itemsPerPage = ITEMS_PER_PAGE;
   const totalPages = Math.ceil(filteredPhones.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -122,7 +122,11 @@ const PhoneCatalog: React.FC = () => {
           />
         </div>
         <div className="md:w-3/4">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            suggestions={phones}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
             {currentPhones.map((phone) => (
               <PhoneCard key={phone.id} phone={phone} onAddToCart={addToCart} />

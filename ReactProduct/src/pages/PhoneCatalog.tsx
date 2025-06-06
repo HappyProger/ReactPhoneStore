@@ -9,7 +9,7 @@ import { useCart } from "../context/CartContext";
 import FilterListIcon from "@mui/icons-material/FilterList";
 // import FilterListOffIcon from "@mui/icons-material/FilterListOff";
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 8;
 
 const PhoneCatalog: React.FC = () => {
   const [phones, setPhones] = useState<Phone[]>([]);

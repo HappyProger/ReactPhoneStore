@@ -55,7 +55,7 @@ const PhoneDetailsPage: React.FC = () => {
           <br />
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
             Try Again
           </button>
@@ -69,82 +69,89 @@ const PhoneDetailsPage: React.FC = () => {
     : 0;
 
   return (
-    <div className="container mx-auto max-w-5xl px-6 py-10">
-      <h1 className="text-3xl font-bold mb-8 text-center md:text-left">
+    <div className="container mx-auto max-w-3xl px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-center">
         {phone.brand} {phone.name}
       </h1>
-      <div className="flex flex-col md:flex-row gap-12">
-        {/* Фото */}
-        <div className="md:w-1/2 flex justify-center items-center">
+
+      <div className="flex flex-col sm:flex-row gap-8">
+        {/* Image */}
+        <div className="sm:w-1/2 flex justify-center items-center">
           <img
             src={phone.imageUrl}
             alt={phone.name}
-            className="max-w-full max-h-[400px] object-contain rounded-xl shadow-lg"
+            className="max-w-full max-h-[300px] object-contain rounded-lg shadow"
           />
         </div>
 
-        {/* Правая колонка */}
-        <div className="md:w-1/2 flex flex-col gap-8">
-          {/* Карточка с ценой и кнопкой */}
-          <div className="border rounded-xl p-6 shadow-md">
+        {/* Info */}
+        <div className="sm:w-1/2 flex flex-col justify-between">
+          {/* Price section */}
+          <div className="border rounded-lg p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <div>
-                <span className="text-3xl font-bold text-blue-600">
+              <div className="flex items-center gap-4">
+                <span className="text-3xl font-extrabold text-blue-600">
                   {phone.currency || "$"}
-                  {phone.price}
+                  {phone.price.toLocaleString()}
                 </span>
                 {phone.oldPrice && (
-                  <span className="ml-3 text-xl text-gray-500 line-through">
+                  <span className="text-gray-400 line-through text-lg">
                     {phone.currency || "$"}
-                    {phone.oldPrice}
+                    {phone.oldPrice.toLocaleString()}
                   </span>
                 )}
               </div>
+
               {discountPercent > 0 && (
-                <span className="bg-green-100 text-green-800 font-semibold px-3 py-1 rounded">
+                <span className="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded">
                   -{discountPercent}%
                 </span>
               )}
             </div>
-            {phone.installment && phone.installmentCount && (
-              <div className="mb-4 text-gray-600">
-                Рассрочка: {phone.currency || "$"}
-                {phone.installment} × {phone.installmentCount} месяцев
-              </div>
-            )}
+
+            {/* Price & Installment labels and values */}
+            <div className="flex gap-6 text-sm font-semibold text-gray-600 mb-4">
+              {phone.installment && phone.installmentCount && (
+                <div>
+                  <div className="uppercase mb-1 text-xs">В рассрочку</div>
+                  <div className="inline-flex items-center bg-yellow-300 text-yellow-900 px-3 py-1 rounded text-lg font-extrabold">
+                    {phone.installment.toLocaleString()} {phone.currency || "$"}
+                    <span className="ml-2 font-normal text-gray-700 text-base">
+                      × {phone.installmentCount} мес.
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               onClick={handleBuy}
-              className="w-full bg-black text-white py-3 rounded-xl font-semibold text-lg hover:bg-gray-800 transition"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold shadow-md transition focus:outline-none focus:ring-4 focus:ring-blue-300"
             >
               Добавить в корзину
             </button>
           </div>
 
-          {/* Описание */}
-          {phone.description && (
-            <div className="border rounded-xl p-6 shadow-md">
-              <h3 className="font-semibold text-lg mb-4">Описание</h3>
-              <p className="text-gray-700">{phone.description}</p>
-            </div>
-          )}
-
-          {/* Характеристики */}
-          <div className="border rounded-xl p-6 shadow-md">
-            <h3 className="font-semibold text-lg mb-4">
-              Основные характеристики
-            </h3>
-            <dl className="grid grid-cols-2 gap-y-3 text-gray-700">
-              <dt className="font-normal">Экран</dt>
-              <dd className="text-right">{phone.specs?.screen ?? ""}</dd>
-              <dt className="font-normal">Процессор</dt>
-              <dd className="text-right">{phone.specs?.processor ?? ""}</dd>
-              <dt className="font-normal">Оперативная память</dt>
-              <dd className="text-right">{phone.specs?.ram ?? ""}</dd>
-              <dt className="font-normal">Память</dt>
-              <dd className="text-right">{phone.specs?.storage ?? ""}</dd>
-              <dt className="font-normal">Камера</dt>
-              <dd className="text-right">{phone.specs?.camera ?? ""}</dd>
-            </dl>
+          {/* Description and Specs */}
+          <div className="mt-6 border rounded-lg p-6 shadow-sm">
+            <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-2">
+              Описание
+            </h2>
+            <p className="text-gray-700 text-sm leading-relaxed mb-6">
+              {phone.description}
+            </p>
+            <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-2">
+              Характеристики
+            </h2>
+            <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
+              {phone.specs &&
+                Object.entries(phone.specs).map(([key, value]) => (
+                  <li key={key}>
+                    <span className="capitalize font-semibold">{key}:</span>{" "}
+                    {value}
+                  </li>
+                ))}
+            </ul>
           </div>
         </div>
       </div>

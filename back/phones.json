@@ -78,6 +78,7 @@
     "name": " Mi 11",
     "brand": "Xiaomi",
     "price": 749,
+    "oldPrice": 849,
     "description": "Flagship killer with excellent specs",
     "installment": 45,
     "installmentCount": 24,

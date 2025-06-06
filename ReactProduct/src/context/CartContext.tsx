@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 import { Phone } from "../types/types";
 
@@ -14,13 +20,45 @@ interface CartContextType {
   totalPrice: number;
 }
 
+const CART_STORAGE_KEY = "cart_data";
+const CART_VERSION = "1.0";
+
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [cartItems, setCartItems] = useState<Phone[]>([]);
+  const [cartItems, setCartItems] = useState<Phone[]>(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (savedCart) {
+        const { version, items } = JSON.parse(savedCart);
+        if (version === CART_VERSION) {
+          return items;
+        }
+      }
+    } catch (error) {
+      console.error("Error loading cart from localStorage:", error);
+    }
+    return [];
+  });
+
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Синхронизация с localStorage при изменении cartItems
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        CART_STORAGE_KEY,
+        JSON.stringify({
+          version: CART_VERSION,
+          items: cartItems,
+        })
+      );
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error);
+    }
+  }, [cartItems]);
 
   const addToCart = (phone: Phone) => {
     setCartItems((prev) => {
@@ -59,6 +97,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   const clearCart = () => {
     setCartItems([]);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch (error) {
+      console.error("Error clearing cart from localStorage:", error);
+    }
   };
 
   const totalPrice = cartItems.reduce(

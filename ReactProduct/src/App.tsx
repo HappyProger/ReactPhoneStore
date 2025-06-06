@@ -1,6 +1,8 @@
 // src/App.tsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PhoneCatalog from "./pages/PhoneCatalog";
@@ -15,7 +17,7 @@ const App: React.FC = () => {
     <NotificationProvider>
       <CartProvider>
         <Router>
-          <div className="min-h-screen flex flex-col">
+          <div className="container mx-auto min-h-screen flex flex-col">
             <Header />
             <main className="flex-grow">
               <Routes>
@@ -26,6 +28,18 @@ const App: React.FC = () => {
             </main>
             <Footer />
           </div>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </Router>
       </CartProvider>
     </NotificationProvider>

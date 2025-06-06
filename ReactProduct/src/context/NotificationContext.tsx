@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import Notifications from "../components/Notifications";
+import React, { createContext, useContext } from "react";
+import { toast } from "react-toastify";
 
 interface NotificationContextType {
   showNotification: (
@@ -15,40 +15,29 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: "success" | "error" | "info" | "warning";
-    isVisible: boolean;
-  }>({
-    message: "",
-    type: "info",
-    isVisible: false,
-  });
-
-  const showNotification = useCallback(
-    (message: string, type: "success" | "error" | "info" | "warning") => {
-      setNotification({ message, type, isVisible: true });
-      setTimeout(() => {
-        setNotification((prev) => ({ ...prev, isVisible: false }));
-      }, 3000);
-    },
-    []
-  );
-
-  const handleClose = useCallback(() => {
-    setNotification((prev) => ({ ...prev, isVisible: false }));
-  }, []);
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info" | "warning"
+  ) => {
+    switch (type) {
+      case "success":
+        toast.success(message);
+        break;
+      case "error":
+        toast.error(message);
+        break;
+      case "warning":
+        toast.warning(message);
+        break;
+      case "info":
+        toast.info(message);
+        break;
+    }
+  };
 
   return (
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
-      {notification.isVisible && (
-        <Notifications
-          message={notification.message}
-          type={notification.type}
-          onClose={handleClose}
-        />
-      )}
     </NotificationContext.Provider>
   );
 };

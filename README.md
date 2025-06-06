@@ -14,7 +14,7 @@ This is a simple e-commerce application built with React, focusing on phone prod
 
 ## Getting Started
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+To run the full application, you need to start both the backend server and the frontend development server.
 
 ### Prerequisites
 
@@ -23,43 +23,65 @@ Make sure you have Node.js and npm installed on your computer.
 - Node.js: [https://nodejs.org/](https://nodejs.org/)
 - npm: Node.js installation usually includes npm.
 
-### Installation
+### Backend Setup and Running
 
-1.  Navigate to the project directory in your terminal.
+1.  Navigate to the backend directory (assuming it's named `back`):
 
     ```bash
-    cd ReactProduct
+    cd ../back
     ```
 
-2.  Install the project dependencies:
+2.  Install the backend dependencies:
 
     ```bash
     npm install
     ```
 
-### Running the Project
+3.  Start the backend server:
 
-To run the project in development mode:
+    ```bash
+    npm run dev
+    ```
 
-```bash
-npm run dev
-```
+    The backend should start, typically on port 5000 (as configured in `src/services/api.ts`).
 
-This will start a local development server, usually at `http://localhost:5173`. The console output will show the exact address. The application will automatically reload when you make changes to the code.
+### Frontend Setup and Running
+
+1.  Navigate to the frontend project directory:
+
+    ```bash
+    cd ReactProduct
+    ```
+
+2.  Install the frontend dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3.  Run the frontend development server:
+
+    ```bash
+    npm run dev
+    ```
+
+    This will start a local development server for the frontend, usually at `http://localhost:5173`. The console output will show the exact address.
+
+**Note:** The application requires both the backend and frontend servers to be running simultaneously.
 
 ### Building for Production
 
-To build the application for production deployment:
+To build the frontend application for production deployment:
 
 ```bash
 npm run build
 ```
 
-This command will create a `dist` folder in the project root with the optimized production build.
+This command will create a `dist` folder in the `ReactProduct` directory with the optimized production build.
 
 ### Project Structure
 
-The main project files are located in the `src` directory:
+The main frontend project files are located in the `src` directory:
 
 - `src/App.tsx`: Main application component and routing setup.
 - `src/index.css`: Global styles.

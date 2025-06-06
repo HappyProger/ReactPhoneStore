@@ -1,7 +1,7 @@
 import React from "react";
 import { Phone } from "../types/types";
 
-const BRAND_OPTIONS = ["Apple", "Oppo", "Samsung", "Vivo", "Xiaomi"];
+const BRAND_OPTIONS = ["Apple", "Oppo", "Samsung", "Vivo", "Xiaomi", "Lenovo"];
 const MEMORY_OPTIONS = [
   "32 GB",
   "64 GB",
@@ -21,6 +21,7 @@ interface FilterPanelProps {
   onMemoryChange?: (memory: string) => void;
   sortOrder: "asc" | "desc";
   onSortOrderChange: (order: "asc" | "desc") => void;
+  onResetFilters: () => void;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -33,6 +34,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onMemoryChange,
   sortOrder,
   onSortOrderChange,
+  onResetFilters,
 }) => {
   const minPrice = Math.min(...phones.map((phone) => phone.price));
   const maxPrice = Math.max(...phones.map((phone) => phone.price));
@@ -43,6 +45,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     } else {
       onBrandChange([...selectedBrands, brand]);
     }
+  };
+
+  const handleReset = () => {
+    onResetFilters();
   };
 
   return (
@@ -124,6 +130,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           />
         </div>
       </div>
+
+      {/* Reset Filters Button */}
+      <button
+        onClick={handleReset}
+        className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-red-700 transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+      >
+        Сбросить фильтры
+      </button>
     </div>
   );
 };

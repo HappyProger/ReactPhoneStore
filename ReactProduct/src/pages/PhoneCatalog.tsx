@@ -22,6 +22,23 @@ const PhoneCatalog: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const { addToCart } = useCart();
 
+  // Function to reset all filters
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedBrands([]);
+    setSelectedMemory("");
+    // Reset price range to min/max of all phones (or a default if phones is empty)
+    const minPrice =
+      phones.length > 0 ? Math.min(...phones.map((phone) => phone.price)) : 0;
+    const maxPrice =
+      phones.length > 0
+        ? Math.max(...phones.map((phone) => phone.price))
+        : 2000; // Assuming 2000 is a reasonable max default
+    setPriceRange([minPrice, maxPrice]);
+    setSortOrder("asc");
+    setCurrentPage(1); // Reset to first page
+  };
+
   useEffect(() => {
     const fetchPhones = async () => {
       try {
@@ -136,6 +153,7 @@ const PhoneCatalog: React.FC = () => {
             onMemoryChange={setSelectedMemory}
             sortOrder={sortOrder}
             onSortOrderChange={setSortOrder}
+            onResetFilters={handleResetFilters}
           />
         </div>
         <div className="md:w-3/4">
@@ -150,11 +168,13 @@ const PhoneCatalog: React.FC = () => {
             ))}
           </div>
           {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            <div className="flex justify-center w-full mt-8">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           )}
         </div>
       </div>

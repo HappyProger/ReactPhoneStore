@@ -181,14 +181,14 @@
       "screen": "6.1-inch Super Retina XDR",
       "processor": "A15 Bionic",
       "ram": "4GB",
-      "storage": "1024GB",
+      "storage": "64GB",
       "camera": "12MP Dual Camera"
     }
   },
   {
     "id": "11",
     "name": "iPhone 19",
-    "brand": "Apple",
+    "brand": "Lenovo",
     "price": 999,
     "currency": "$",
     "description": "Latest iPhone with amazing features",
@@ -199,7 +199,7 @@
       "screen": "6.1-inch Super Retina XDR",
       "processor": "A15 Bionic",
       "ram": "4GB",
-      "storage": "512GB",
+      "storage": "32GB",
       "camera": "12MP Dual Camera"
     }
   },
@@ -218,7 +218,7 @@
       "screen": "6.1-inch Super Retina XDR",
       "processor": "A15 Bionic",
       "ram": "4GB",
-      "storage": "128GB",
+      "storage": "64GB",
       "camera": "12MP Dual Camera"
     }
   }

@@ -69,7 +69,7 @@ const PhoneCard: React.FC<PhoneCardProps> = ({ phone, onAddToCart }) => {
         </div>
         <button
           onClick={handleAddToCart}
-          className="w-full bg-black text-white py-2 rounded-xl font-semibold text-lg hover:bg-gray-800 transition mb-2 mt-auto"
+          className="w-full bg-blue-600 text-white py-2 rounded-xl font-semibold text-lg hover:bg-indigo-700 transition mb-2 mt-auto"
         >
           Добавить в корзину
         </button>

@@ -7,7 +7,7 @@ import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import { useCart } from "../context/CartContext";
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 8;
 
 const PhoneCatalog: React.FC = () => {
   const [phones, setPhones] = useState<Phone[]>([]);

@@ -6,8 +6,10 @@ import FilterPanel from "../components/FilterPanel";
 import SearchBar from "../components/SearchBar";
 import Pagination from "../components/Pagination";
 import { useCart } from "../context/CartContext";
+import FilterListIcon from "@mui/icons-material/FilterList";
+// import FilterListOffIcon from "@mui/icons-material/FilterListOff";
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 4;
 
 const PhoneCatalog: React.FC = () => {
   const [phones, setPhones] = useState<Phone[]>([]);
@@ -22,21 +24,29 @@ const PhoneCatalog: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const { addToCart } = useCart();
 
-  // Function to reset all filters
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+
+  const toggleFilterPanel = () => {
+    setIsFilterPanelOpen(!isFilterPanelOpen);
+  };
+
+  const closeFilterPanel = () => {
+    setIsFilterPanelOpen(false);
+  };
+
   const handleResetFilters = () => {
     setSearchQuery("");
     setSelectedBrands([]);
     setSelectedMemory("");
-    // Reset price range to min/max of all phones (or a default if phones is empty)
     const minPrice =
       phones.length > 0 ? Math.min(...phones.map((phone) => phone.price)) : 0;
     const maxPrice =
       phones.length > 0
         ? Math.max(...phones.map((phone) => phone.price))
-        : 2000; // Assuming 2000 is a reasonable max default
+        : 1500; 
     setPriceRange([minPrice, maxPrice]);
     setSortOrder("asc");
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1); 
   };
 
   useEffect(() => {
@@ -58,7 +68,6 @@ const PhoneCatalog: React.FC = () => {
   useEffect(() => {
     let filtered = [...phones];
 
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(
         (phone) =>
@@ -67,14 +76,12 @@ const PhoneCatalog: React.FC = () => {
       );
     }
 
-    // Apply brand filter
     if (selectedBrands.length > 0) {
       filtered = filtered.filter((phone) =>
         selectedBrands.includes(phone.brand ?? "")
       );
     }
 
-    // Apply memory filter
     if (selectedMemory) {
       filtered = filtered.filter((phone) => {
         const storage = phone.specs?.storage?.replace(/\s+/g, "").toLowerCase();
@@ -83,12 +90,10 @@ const PhoneCatalog: React.FC = () => {
       });
     }
 
-    // Apply price filter
     filtered = filtered.filter(
       (phone) => phone.price >= priceRange[0] && phone.price <= priceRange[1]
     );
 
-    // Apply sorting
     filtered = [...filtered].sort((a, b) => {
       if (sortOrder === "asc") {
         return a.price - b.price;
@@ -141,28 +146,50 @@ const PhoneCatalog: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/4">
-          <FilterPanel
-            phones={phones}
-            selectedBrands={selectedBrands}
-            onBrandChange={setSelectedBrands}
-            priceRange={priceRange}
-            onPriceChange={setPriceRange}
-            selectedMemory={selectedMemory}
-            onMemoryChange={setSelectedMemory}
-            sortOrder={sortOrder}
-            onSortOrderChange={setSortOrder}
-            onResetFilters={handleResetFilters}
-          />
+ 
+      <div className="flex justify-end lg:hidden mb-4 z-50">
+        <button
+          onClick={toggleFilterPanel}
+          className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+          aria-label="Toggle filters"
+        >
+          <FilterListIcon /> 
+        </button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div
+          className={`w-full lg:w-1/4 lg:relative absolute top-0 left-0 h-full bg-white shadow-lg z-40 transition-transform duration-300 ease-in-out ${
+            isFilterPanelOpen ? "translate-x-0" : "-translate-x-full"
+          } lg:translate-x-0 lg:block ${
+            !isFilterPanelOpen && window.innerWidth < 1024 ? "hidden" : ""
+          }`}
+        >
+          {(isFilterPanelOpen || window.innerWidth >= 1024) && (
+            <FilterPanel
+              phones={phones}
+              selectedBrands={selectedBrands}
+              onBrandChange={setSelectedBrands}
+              priceRange={priceRange}
+              onPriceChange={setPriceRange}
+              selectedMemory={selectedMemory}
+              onMemoryChange={setSelectedMemory}
+              sortOrder={sortOrder}
+              onSortOrderChange={setSortOrder}
+              onResetFilters={handleResetFilters}
+              isMobileOpen={isFilterPanelOpen} 
+              onClose={closeFilterPanel} 
+            />
+          )}
         </div>
-        <div className="md:w-3/4">
+
+        <div className={`w-full ${isFilterPanelOpen ? "lg:w-3/4" : ""}`}>
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
             suggestions={phones}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
             {currentPhones.map((phone) => (
               <PhoneCard key={phone.id} phone={phone} onAddToCart={addToCart} />
             ))}

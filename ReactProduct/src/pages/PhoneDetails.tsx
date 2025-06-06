@@ -75,7 +75,6 @@ const PhoneDetailsPage: React.FC = () => {
       </h1>
 
       <div className="flex flex-col sm:flex-row gap-8">
-        {/* Image */}
         <div className="sm:w-1/2 flex justify-center items-center">
           <img
             src={phone.imageUrl}
@@ -84,9 +83,7 @@ const PhoneDetailsPage: React.FC = () => {
           />
         </div>
 
-        {/* Info */}
         <div className="sm:w-1/2 flex flex-col justify-between">
-          {/* Price section */}
           <div className="border rounded-lg p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
@@ -109,7 +106,6 @@ const PhoneDetailsPage: React.FC = () => {
               )}
             </div>
 
-            {/* Price & Installment labels and values */}
             <div className="flex gap-6 text-sm font-semibold text-gray-600 mb-4">
               {phone.installment && phone.installmentCount && (
                 <div>
@@ -132,7 +128,6 @@ const PhoneDetailsPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Description and Specs */}
           <div className="mt-6 border rounded-lg p-6 shadow-sm">
             <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-2">
               Описание

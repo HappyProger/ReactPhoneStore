@@ -3,7 +3,7 @@ export interface Phone {
     name: string;
     brand?: string;
     price: number;
-    quantity: number;  // обязательное поле
+    quantity: number; 
     oldPrice?: number;
     currency?: string;
     description?: string;

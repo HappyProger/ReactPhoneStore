@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Cart from "./Cart";
@@ -89,7 +88,6 @@ const Header: React.FC = () => {
               >
                 Catalog
               </Link>
-              {/* Cart button is already in the header main row, no need to repeat in mobile menu */}
             </nav>
           </div>
         )}

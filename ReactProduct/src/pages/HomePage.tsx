@@ -19,7 +19,6 @@ const HomePage: React.FC = () => {
         </Link>
       </div>
 
-      {/* Feature cards section */}
       <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl w-full px-4 sm:px-0">
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
           <span className="text-2xl sm:text-3xl mb-2 text-blue-500">📱</span>

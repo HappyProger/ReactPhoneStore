@@ -45,7 +45,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Синхронизация с localStorage при изменении cartItems
+  //  localStorage 
   useEffect(() => {
     try {
       localStorage.setItem(
